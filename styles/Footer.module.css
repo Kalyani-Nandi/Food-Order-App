@@ -43,10 +43,7 @@
     display: none;
   }
 
-  .item {
-    flex-direction: column;
-  }
-
+ 
   .title {
     font-size: 30px;
   }

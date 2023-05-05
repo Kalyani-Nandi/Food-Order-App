@@ -1,31 +1,30 @@
 import Featured from "@/components/Featured";
 import PizzaList from "@/components/PizzaList";
-import axios from "axios"
+import axios from "axios";
 import Head from "next/head";
 
-
-export default function Home({pizzaList}:any) {
+export default function Home({ pizzaList }: any) {
   return (
-   <div>
-     <Head>
+    <div>
+      <Head>
         <title>Pizza Restaurant in Newyork</title>
         <meta name="description" content="Best pizza shop in town" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Featured />
-<PizzaList pizzaList={pizzaList} />
-   </div>
-  )
+      <div id="products">
+        <PizzaList pizzaList={pizzaList} />
+      </div>
+    </div>
+  );
 }
 
-export const getServerSideProps = async()=>{
-const res =await axios.get(`http://localhost:3000/api/products`);
+export const getServerSideProps = async () => {
+  const res = await axios.get(`http://localhost:3000/api/products`);
 
-return {
-  props:{
-    pizzaList:res.data,
-
-  }
-}
-
-}
+  return {
+    props: {
+      pizzaList: res.data,
+    },
+  };
+};
