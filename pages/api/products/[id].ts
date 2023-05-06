@@ -1,5 +1,3 @@
-
-
 import dbConnect from "../../../utils/mongo";
 const mongoose = require('mongoose');
 
@@ -8,6 +6,7 @@ var Product = mongoose.model('Product')
 export default async function handler(req:any, res: any) {
     const { method ,query:{ id },cookies } = req;
     dbConnect();
+    const token = cookies.token
 
     if(method === "GET") {
         try{
@@ -19,6 +18,9 @@ export default async function handler(req:any, res: any) {
     }
 
     if(method === "PUT") {
+        if(!token || token !== process.env.token){
+            return res.status(401).json("Not authenticated!")
+          }
         try{
            const product=await Product.findByIdAndUpdate(id,req.body,{
             new:true,
@@ -30,6 +32,9 @@ export default async function handler(req:any, res: any) {
     }
     
     if(method === "DELETE") {
+        if(!token || token !== process.env.token){
+            return res.status(401).json("Not authenticated!")
+          }
         try{
           await Product.findByIdAndDelete(id);
            res.status(200).json("The product has been deleted!"); 

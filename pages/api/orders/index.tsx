@@ -2,7 +2,7 @@
 import dbConnect from "@/utils/mongo";
 const mongoose = require('mongoose');
 
-var Order = mongoose.model("Order")
+let Order = mongoose.model("Order")
 const handler =async (req:any, res:any) => {
     const {method}=req;
     await dbConnect();

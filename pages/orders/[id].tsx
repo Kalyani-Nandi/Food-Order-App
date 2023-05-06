@@ -6,7 +6,7 @@ import Image from "next/image";
  const order = ({order}:any) => {
     const status = order.status;
 
-  const statusClass = (index) => {
+  const statusClass = (index:any) => {
     if (index - status < 1) return styles.done;
     if (index - status === 1) return styles.inProgress;
     if (index - status > 1) return styles.undone;
