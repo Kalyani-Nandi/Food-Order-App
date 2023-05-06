@@ -1,27 +1,50 @@
+import { PayPalButtons, PayPalScriptProvider, usePayPalScriptReducer } from '@paypal/react-paypal-js'
 import Image from 'next/image'
-import React from 'react'
-import { useSelector } from 'react-redux'
-
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { reset } from "../redux/cartSlice"
+import axios from 'axios'
+import { OrderDetails } from '@/components/OrderDetails'
 function cart() {
     const cart =useSelector((state)=>state?.cart)
+    const [open,setOpen]=useState(false)
+    const [cash,setCash]=useState(false)
+    const amount = cart.total;
+
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    const createOrder = async (data:any) => {
+      try {
+        const res = await axios.post("http://localhost:3000/api/orders", data);
+        if (res.status === 201) {
+          dispatch(reset());
+          router.push(`/orders/${res.data._id}`);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    
   return (
-    <div className="sm:p-[50px] p-[20px] sm:flex-row flex-col flex">
-      <div className="flex-2">
-        <table className="w-full sm:flex sm:items-center sm:justify-center  sm:flex-col border-spacing-[20px]">
-          <tbody>
-            <tr className="">
-              <th>Product</th>
-              <th>Name</th>
-              <th>Extras</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
+    <div className=" p-[20px] sm:flex-row flex-col flex">
+      <div className="w-[70%]">
+        <table className="w-full flex items-center justify-center  flex-col ">
+          <thead>
+            <tr className="border-spacing-[10px]">
+              <th className='p-5'>Product</th>
+              <th className='p-5'>Name</th>
+              <th className='p-5'>Extras</th>
+              <th className='p-5'>Price</th>
+              <th className='p-5'>Quantity</th>
+              <th className='p-5'>Total</th>
             </tr>
-          </tbody>
+          </thead>
           <tbody>
             {cart.products.map((product:any) => (
-              <tr className=""key={product._id}>
-                <td>
+              <tr className="w-full" key={product._id}>
+                <td className='p-5'>
                   <div className=" w-[35vw] sm:w-[100px] h-[35vw] sm:h-[100px] relative">
                     <Image
                       src={product.img}
@@ -31,23 +54,23 @@ function cart() {
                     />
                   </div>
                 </td>
-                <td>
+                <td className='p-5'>
                   <span className="font-medium text-[18px] text-[#d1411e]">{product.title}</span>
                 </td>
-                <td>
+                <td className='p-5'>
                   <span className="">
                     {product.extras.map((extra:any) => (
                       <span key={extra._id}>{extra.text}, </span>
                     ))}
                   </span>
                 </td>
-                <td>
+                <td className='p-5'>
                   <span className="">${product.price}</span>
                 </td>
-                <td>
+                <td className='p-5'>
                   <span className="">{product.quantity}</span>
                 </td>
-                <td>
+                <td className='p-5'>
                   <span className="font-medium text-[18px]">
                     ${product.price * product.quantity}
                   </span>
@@ -57,8 +80,8 @@ function cart() {
           </tbody>
         </table>
       </div>
-      <div className="flex-1">
-        <div className="w-[90%] sm:w-[40%] max-h-[300px] bg-[#333] p-[50px] pt-[10px] flex flex-col justify-between text-white">
+      <div className="w-[30%]">
+        <div className="w-[90%]  max-h-[300px] bg-[#333] p-[50px] pt-[10px] flex flex-col justify-between text-white">
           <h2 className="">CART TOTAL</h2>
           <div className="">
             <b className="mr-[10px]">Subtotal:</b>${cart.total}
@@ -69,36 +92,26 @@ function cart() {
           <div className="">
             <b className="mr-[10px]">Total:</b>${cart.total}
           </div>
-          {/* {open ? (
-            <div className={styles.paymentMethods}>
+          {open ? (
+            <div className="">
               <button
-                className={styles.payButton}
+                className=""
                 onClick={() => setCash(true)}
               >
                 CASH ON DELIVERY
               </button>
-              <PayPalScriptProvider
-                options={{
-                  "client-id":
-                    "ATTL8fDJKfGzXNH4VVuDy1qW4_Jm8S0sqmnUTeYtWpqxUJLnXIn90V8YIGDg-SNPaB70Hg4mko_fde4-",
-                  components: "buttons",
-                  currency: "USD",
-                  "disable-funding": "credit,card,p24",
-                }}
-              >
-                <ButtonWrapper currency={currency} showSpinner={false} />
-              </PayPalScriptProvider>
+             
             </div>
-          ) : ( */}
+          ) : (
             <button 
-            // onClick={() => setOpen(true)} 
+            onClick={() => setOpen(true)} 
             className="h-[30px] text-[#d1411e] font-bold cursor-pointer mt-[20px] ">
               CHECKOUT NOW!
             </button>
-          {/* )} */}
+           )} 
         </div>
       </div>
-      {/* {cash && <OrderDetail total={cart.total} createOrder={createOrder} />} */}
+      {cash && <OrderDetails total={cart.total} setCash={setCash} cash={cash} createOrder={createOrder} />}
     </div>
   )
 }

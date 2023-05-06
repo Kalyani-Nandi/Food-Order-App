@@ -7,6 +7,11 @@ const OrderSchema=new mongoose.Schema({
         required:true,
         maxlength:60,
     },
+    phone:{
+        type:Number,
+        required:true,
+        maxlength:10,
+    },
     address:{
         type:String,
         required:true,
