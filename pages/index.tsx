@@ -22,7 +22,7 @@ export default function Home({ pizzaList,admin }: any) {
       <div id="products">
         <PizzaList pizzaList={pizzaList} />
       </div>
-      {close && <AddPizza setClose={setClose} />}
+      {close && <AddPizza close={close} setClose={setClose} />}
     </div>
   );
 }
